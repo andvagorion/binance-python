@@ -1,5 +1,4 @@
-import sys
-import os
+import os, sys
 from pathlib import Path
 import requests
 import json
@@ -50,8 +49,8 @@ def write_data(symbol, year, month, data):
         json.dump(data, f)
 
 
-def no_symbol_data(symbol):
-    symbol_path = get_path(symbol)
+def no_symbol_data(symbol, year, month):
+    symbol_path = get_path(symbol, year, month)
     return not os.path.exists(symbol_path)
 
 
@@ -200,9 +199,10 @@ def load(symbol, last):
 columns = ['TIMESTAMP', 'OPEN', 'HIGH', 'LOW', 'CLOSE']
 
 def get_price(symbol, date):
-    if no_symbol_data(symbol): return None
+    [year, month] = date.split("-")[:2]
+    if no_symbol_data(symbol, year, month): return None
     
-    symbol_path = get_path(symbol)
+    symbol_path = get_path(symbol, year, month)
     with open(symbol_path, 'r') as f:
         data = json.load(f)
     
